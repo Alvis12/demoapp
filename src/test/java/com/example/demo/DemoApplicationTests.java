@@ -30,4 +30,11 @@ class DemoApplicationTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.message").value("Hello from DBS demo!"));
 	}
+
+	@Test
+	void visitsShouldReturnCount() throws Exception {
+		mockMvc.perform(get("/api/visits"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.count").isNumber());
+	}
 }

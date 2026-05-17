@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陳昱斌 · Yu-Bin Chen</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a; --surface: #111111; --border: #1e1e1e;
+    --accent: #c8f04a; --accent2: #4af0c8;
+    --text: #e8e8e0; --muted: #666660;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Noto Sans TC', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+  ::selection { background: var(--accent); color: #0a0a0a; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1000; opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+  .hero-left { padding: 80px 60px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--border); }
+  .hero-right { padding: 80px 60px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
+  .hero-right::before { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(200,240,74,0.08) 0%, transparent 70%); pointer-events: none; }
+  .nav-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+  .hero-name { font-family: var(--serif); font-size: clamp(64px, 8vw, 120px); line-height: 0.9; letter-spacing: -0.02em; margin-top: auto; }
+  .hero-title { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; color: var(--muted); margin-top: 20px; margin-bottom: 16px; }
+  .hero-roles { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .role-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+  .role-tag::before { content: '→'; color: var(--accent); font-size: 12px; }
+  .hero-desc { font-size: 15px; color: #aaa; line-height: 1.8; max-width: 400px; margin-bottom: 48px; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; }
+  .tag { font-family: var(--mono); font-size: 11px; padding: 6px 14px; border: 1px solid var(--border); color: var(--muted); letter-spacing: 0.08em; transition: all 0.2s; cursor: default; }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-grid-num { font-family: var(--mono); font-size: 180px; color: var(--border); position: absolute; bottom: -20px; right: 40px; line-height: 1; pointer-events: none; user-select: none; }
+  .scroll-hint { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; display: flex; align-items: center; gap: 8px; animation: bounce 2s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+  section { border-bottom: 1px solid var(--border); }
+  .section-header { display: grid; grid-template-columns: 200px 1fr; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 24px 60px; border-right: 1px solid var(--border); letter-spacing: 0.1em; }
+  .section-title { font-family: var(--serif); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 24px 60px; }
+  .about-grid { display: grid; grid-template-columns: 200px 1fr; }
+  .about-sidebar { border-right: 1px solid var(--border); padding: 60px; }
+  .about-content { padding: 60px; }
+  .stat { margin-bottom: 40px; }
+  .stat-num { font-family: var(--serif); font-size: 48px; color: var(--accent); line-height: 1; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+  .about-text { font-size: 16px; color: #bbb; line-height: 1.9; max-width: 640px; }
+  .about-text strong { color: var(--text); font-weight: 500; }
+  .project-item { display: grid; grid-template-columns: 200px 1fr auto; border-bottom: 1px solid var(--border); padding: 48px 60px; gap: 40px; transition: background 0.2s; cursor: default; }
+  .project-item:last-child { border-bottom: none; }
+  .project-item:hover { background: rgba(200,240,74,0.02); }
+  .project-year { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-top: 4px; }
+  .project-name { font-family: var(--serif); font-size: 24px; margin-bottom: 12px; line-height: 1.2; }
+  .project-desc { font-size: 14px; color: #888; line-height: 1.7; max-width: 560px; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .project-tag { font-family: var(--mono); font-size: 10px; padding: 4px 10px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); letter-spacing: 0.06em; }
+  .project-award { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.1em; white-space: nowrap; padding-top: 4px; text-align: right; }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .skill-col { padding: 60px; border-right: 1px solid var(--border); }
+  .skill-col:last-child { border-right: none; }
+  .skill-category { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent2); margin-bottom: 24px; }
+  .skill-list { list-style: none; }
+  .skill-list li { font-size: 14px; color: #aaa; padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .skill-list li:last-child { border-bottom: none; }
+  .skill-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; opacity: 0.6; }
+  .award-item { display: grid; grid-template-columns: 200px 1fr; padding: 32px 60px; border-bottom: 1px solid var(--border); gap: 40px; align-items: start; }
+  .award-item:last-child { border-bottom: none; }
+  .award-year { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .award-name { font-size: 15px; color: var(--text); font-weight: 400; }
+  .award-org { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .contact-wrap { padding: 80px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+  .contact-heading { font-family: var(--serif); font-size: 56px; line-height: 1; margin-bottom: 32px; }
+  .contact-heading em { font-style: italic; color: var(--accent); }
+  .contact-info { list-style: none; margin-top: 32px; }
+  .contact-info li { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .contact-info li:last-child { border-bottom: none; }
+  .contact-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; width: 60px; flex-shrink: 0; }
+  .contact-val { font-size: 14px; color: var(--text); }
+  .visit-box { border: 1px solid var(--border); padding: 48px 40px; display: flex; flex-direction: column; gap: 12px; align-self: start; }
+  .visit-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  .visit-count { font-family: var(--serif); font-size: 80px; color: var(--accent); line-height: 1; transition: all 0.4s; }
+  .visit-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  footer { padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-name { font-family: var(--serif); font-size: 20px; }
+  .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
+    .hero-right { padding: 40px 24px; min-height: 50vh; }
+    .hero-name { font-size: 56px; }
+    .section-header { grid-template-columns: 1fr; }
+    .section-num { display: none; }
+    .section-title { padding: 20px 24px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-sidebar { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 24px; display: flex; gap: 32px; }
+    .about-content { padding: 32px 24px; }
+    .project-item { grid-template-columns: 1fr; padding: 32px 24px; gap: 8px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .skill-col { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 24px; }
+    .award-item { grid-template-columns: 1fr; padding: 24px; gap: 4px; }
+    .contact-wrap { grid-template-columns: 1fr; padding: 40px 24px; gap: 40px; }
+    .contact-heading { font-size: 36px; }
+    footer { flex-direction: column; gap: 12px; padding: 32px 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-left">
+    <span class="nav-label">Portfolio · 2025</span>
+    <div>
+      <h1 class="hero-name"><span style="color:var(--accent)">陳昱斌</span></h1>
+      <p class="hero-title">Yu-Bin Chen</p>
+      <div class="hero-roles">
+        <span class="role-tag">FinTech Engineer</span>
+        <span class="role-tag">Quantitative Analyst</span>
+        <span class="role-tag">Financial Researcher</span>
+        <span class="role-tag">AI Developer</span>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>↓</span><span>Scroll to explore</span></div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-desc">國立中央大學資訊管理學系碩士生。橫跨<strong>量化金融研究</strong>、<strong>LLM / RAG 開發</strong>與<strong>資訊安全</strong>的複合背景。</div>
+    <div class="hero-tags">
+      <span class="tag">Python</span><span class="tag">Java</span><span class="tag">SQL</span>
+      <span class="tag">ML / DL</span><span class="tag">LLM · RAG</span><span class="tag">Flask</span>
+      <span class="tag">Spring Boot</span><span class="tag">Docker</span><span class="tag">CI/CD</span><span class="tag">SHAP</span>
+    </div>
+    <div class="hero-grid-num">01</div>
+  </div>
+</section>
+
+<section class="fade-in">
+  <div class="section-header"><span class="section-num">01 / About</span><span class="section-title">關於我</span></div>
+  <div class="about-grid">
+    <div class="about-sidebar">
+      <div class="stat"><div class="stat-num">4.06</div><div class="stat-label">GPA · NCU</div></div>
+      <div class="stat"><div class="stat-num">835</div><div class="stat-label">TOEIC Score</div></div>
+      <div class="stat"><div class="stat-num">3+</div><div class="stat-label">Years Teaching</div></div>
+    </div>
+    <div class="about-content">
+      <p class="about-text">就讀<strong>國立中央大學資訊管理學系碩士班</strong>，具備量化金融研究、LLM + RAG 系統開發與資訊安全三項複合能力。<br><br>實驗室研究方向聚焦金融領域，曾參與<strong>兆豐產學合作</strong>進行台股大盤預測與策略回測，以機器學習方法挖掘具經濟意涵之顯著 Alpha 因子，並運用 SHAP 解釋模型預測邏輯。<br><br>同時具備兩年以上程式設計教學經驗，擅長將複雜技術概念轉化為易於理解的內容。</p>
+    </div>
+  </div>
+</section>
+
+<section class="fade-in">
+  <div class="section-header"><span class="section-num">02 / Projects</span><span class="section-title">專案經歷</span></div>
+  <div class="project-item">
+    <div class="project-year">2025 – 2026</div>
+    <div>
+      <div class="project-name">可解釋 AI 應用<br>兆豐產學合作－台股大盤預測</div>
+      <p class="project-desc">運用逾 20 年公開金融資料（40+ 特徵），建立完整量化研究流程。負責跨市場資料對齊與前處理（防止 look-ahead bias）、模型超參數調整、特徵篩選及策略回測，並以 SHAP 解釋 AI 預測邏輯的經濟直覺。</p>
+      <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">LightGBM</span><span class="project-tag">XGBoost</span><span class="project-tag">SHAP</span><span class="project-tag">Backtesting</span></div>
+    </div>
+    <div class="project-award">產學合作</div>
+  </div>
+  <div class="project-item">
+    <div class="project-year">2024 – 2025</div>
+    <div>
+      <div class="project-name">資安管理系統<br>電腦軟體漏洞檢測系統</div>
+      <p class="project-desc">受邀至友達光電報告，榮獲第 29 屆資服競賽產學合作組冠軍。負責 CVE 公開漏洞資料爬蟲、MySQL 資料庫設計、Flask 後端開發與內部檢測套件設計。</p>
+      <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">Flask</span><span class="project-tag">MySQL</span><span class="project-tag">Web Scraping</span></div>
+    </div>
+    <div class="project-award">🏆 冠軍</div>
+  </div>
+  <div class="project-item">
+    <div class="project-year">2024</div>
+    <div>
+      <div class="project-name">LLM + RAG<br>線上 AI 營養師</div>
+      <p class="project-desc">以 FDA 食品資料庫為來源建立爬蟲 pipeline，將營養資料向量化存入 FAISS，結合 RAG 架構送入 Mistral AI 生成回應，以 LINE Bot 作為使用者介面。</p>
+      <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">RAG</span><span class="project-tag">FAISS</span><span class="project-tag">MongoDB</span><span class="project-tag">Mistral AI</span><span class="project-tag">LINE Bot</span></div>
+    </div>
+    <div class="project-award">LLM App</div>
+  </div>
+  <div class="project-item">
+    <div class="project-year">2025</div>
+    <div>
+      <div class="project-name">Java CI/CD Pipeline<br>Spring Boot + Docker + Railway</div>
+      <p class="project-desc">建立完整的 CI/CD 自動化流程。Spring Boot REST API 搭配 JUnit 自動測試，透過 GitHub Actions 在每次 push 後自動執行測試、打包 Docker Image，並部署至 Railway 雲端平台。</p>
+      <div class="project-tags"><span class="project-tag">Java</span><span class="project-tag">Spring Boot</span><span class="project-tag">Docker</span><span class="project-tag">GitHub Actions</span><span class="project-tag">Railway</span></div>
+    </div>
+    <div class="project-award">DevOps</div>
+  </div>
+</section>
+
+<section class="fade-in">
+  <div class="section-header"><span class="section-num">03 / Skills</span><span class="section-title">技術能力</span></div>
+  <div class="skills-grid">
+    <div class="skill-col">
+      <div class="skill-category">AI · Data</div>
+      <ul class="skill-list">
+        <li>Python <span class="skill-dot"></span></li>
+        <li>ML / DL <span class="skill-dot"></span></li>
+        <li>LLM · RAG <span class="skill-dot"></span></li>
+        <li>SHAP <span class="skill-dot"></span></li>
+        <li>Backtesting <span class="skill-dot"></span></li>
+        <li>Web Scraping <span class="skill-dot"></span></li>
+      </ul>
+    </div>
+    <div class="skill-col">
+      <div class="skill-category">Backend · DevOps</div>
+      <ul class="skill-list">
+        <li>Java / Spring Boot <span class="skill-dot"></span></li>
+        <li>Flask <span class="skill-dot"></span></li>
+        <li>SQL / MySQL <span class="skill-dot"></span></li>
+        <li>MongoDB <span class="skill-dot"></span></li>
+        <li>Docker <span class="skill-dot"></span></li>
+        <li>GitHub Actions CI/CD <span class="skill-dot"></span></li>
+      </ul>
+    </div>
+    <div class="skill-col">
+      <div class="skill-category">Other</div>
+      <ul class="skill-list">
+        <li>TOEIC 835 <span class="skill-dot"></span></li>
+        <li>資訊安全 <span class="skill-dot"></span></li>
+        <li>財務報表判讀 <span class="skill-dot"></span></li>
+        <li>量化金融研究 <span class="skill-dot"></span></li>
+        <li>程式設計教學 3+ 年 <span class="skill-dot"></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="fade-in">
+  <div class="section-header"><span class="section-num">04 / Experience</span><span class="section-title">工作經驗</span></div>
+  <div class="project-item">
+    <div class="project-year">2023 – 2026<br><span style="color:var(--muted);font-size:11px">3年6個月</span></div>
+    <div>
+      <div class="project-name">程式設計教育</div>
+      <p class="project-desc" style="margin-bottom:8px;color:var(--accent2);font-size:13px;font-family:var(--mono)">蘋果芽數位科技股份有限公司 · 台北市中正區</p>
+      <p class="project-desc">將複雜程式設計概念轉化為學生易於理解的內容，受眾年齡層從國小到高中。半年內從助教晉升學習教練，具備與非技術背景人員高效溝通的能力。</p>
+      <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">JavaScript</span><span class="project-tag">HTML</span><span class="project-tag">教學設計</span></div>
+    </div>
+    <div class="project-award">3yr 6mo</div>
+  </div>
+  <div class="project-item">
+    <div class="project-year">2025</div>
+    <div>
+      <div class="project-name">EMI 統計學助教</div>
+      <p class="project-desc" style="margin-bottom:8px;color:var(--accent2);font-size:13px;font-family:var(--mono)">國立中央大學 · 桃園</p>
+      <p class="project-desc">協助全英語授課（EMI）統計學課程之教學支援工作，以英文解說統計概念並協助學生解決課業問題。</p>
+      <div class="project-tags"><span class="project-tag">Statistics</span><span class="project-tag">EMI 全英授課</span><span class="project-tag">TOEIC 835</span></div>
+    </div>
+    <div class="project-award">NCU</div>
+  </div>
+</section>
+
+<section class="fade-in">
+  <div class="section-header"><span class="section-num">05 / Awards</span><span class="section-title">獎項與成就</span></div>
+  <div class="award-item"><div class="award-year">2026</div><div><div class="award-name">WorldQuant IQC 2026 — Stage 1 Gold Level</div><div class="award-org">WorldQuant International Quant Championship</div></div></div>
+  <div class="award-item"><div class="award-year">2024</div><div><div class="award-name">第 29 屆大專校院資訊應用服務創新競賽 — 產學合作組冠軍</div><div class="award-org">受邀至友達光電進行報告</div></div></div>
+  <div class="award-item"><div class="award-year">2024</div><div><div class="award-name">第 29 屆大專校院資訊應用服務創新競賽 — 資安應用組佳作</div><div class="award-org">大專校院資訊應用服務創新競賽</div></div></div>
+  <div class="award-item"><div class="award-year">2024</div><div><div class="award-name">全國工業工程與管理大學生專題競賽 — 技術報告組第三名</div><div class="award-org">全國工業工程與管理學會</div></div></div>
+  <div class="award-item"><div class="award-year">2023</div><div><div class="award-name">台灣作業研究學會大專校院專題競賽 — 佳作</div><div class="award-org">台灣作業研究學會</div></div></div>
+</section>
+
+<section class="fade-in">
+  <div class="section-header"><span class="section-num">06 / Contact</span><span class="section-title">聯絡我</span></div>
+  <div class="contact-wrap">
+    <div>
+      <h2 class="contact-heading">Let's<br><em>Connect</em></h2>
+      <p style="color:#888;font-size:14px;line-height:1.8;">歡迎任何合作機會、實習邀約或技術討論。</p>
+      <ul class="contact-info">
+        <li><span class="contact-label">Email</span><span class="contact-val">qwer521463@gmail.com</span></li>
+        <li><span class="contact-label">GitHub</span><span class="contact-val">github.com/Alvis12</span></li>
+        <li><span class="contact-label">Location</span><span class="contact-val">新北市淡水區 · 台灣</span></li>
+        <li><span class="contact-label">Status</span><span class="contact-val" style="color:var(--accent)">▸ 尋找實習機會</span></li>
+      </ul>
+    </div>
+    <div class="visit-box">
+      <div class="visit-label">Page Visits</div>
+      <div class="visit-count" id="visit-count">—</div>
+      <div class="visit-sub">people have visited this page</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-name">陳昱斌</span>
+  <span class="footer-copy">© 2025 · Built with Spring Boot + Docker + Railway</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  async function loadVisitCount() {
+    try {
+      const res = await fetch('/api/visits');
+      const data = await res.json();
+      document.getElementById('visit-count').textContent = data.count;
+    } catch {
+      document.getElementById('visit-count').textContent = '—';
+    }
+  }
+  loadVisitCount();
+</script>
+</body>
+</html>
